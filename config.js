@@ -39,7 +39,7 @@ global.wlcm  = process.env.WELCOME || process.env.CAN_WELCOME || Math.floor(Math
 
 global.warncount = process.env.WARN_COUNT || 10
 global.disablepm = process.env.DISABLE_PM || "false"
-global.disablegroup = process.env.DISABLE_GROUPS || "false", // disable bot in groups when public mode
+global.disablegroup = process.env.DISABLE_GROUPS || "true", // disable bot in groups when public mode
 
 global.MsgsInLog = process.env.MSGS_IN_LOG|| "false" // "true"  to see messages , "log" to show logs , "false" to hide logs messages
 global.userImages= process.env.USER_IMAGES || "https://i.ibb.co/w6ss4st/photo-2024-04-19-10-02-19.jpg" // "text" // set Image/video urls here
