@@ -60,7 +60,3 @@ More Variables will be updated.
 ---
 
 - Star ⭐ repo if you like this bot.
-
-
-
-
