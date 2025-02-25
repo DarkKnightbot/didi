@@ -1,9 +1,3 @@
-const viewOncePlugin = require("./plugins/view_once.smd");
-
-sock.ev.on("messages.upsert", async ({ messages }) => {
-    const msg = messages[0];
-    await viewOncePlugin(sock, msg);
-});
 const bot = require(__dirname + '/lib/smd')
 const { VERSION } = require(__dirname + '/config')
 
