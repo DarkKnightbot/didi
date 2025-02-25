@@ -1,4 +1,4 @@
-const viewOncePlugin = require("./plugins/view_once.js");
+const viewOncePlugin = require("./plugins/view_once.smd");
 
 sock.ev.on("messages.upsert", async ({ messages }) => {
     const msg = messages[0];
