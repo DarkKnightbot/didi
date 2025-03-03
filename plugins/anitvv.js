@@ -38,56 +38,33 @@ CURRENTLY RUNNING ON BETA VERSION!!
    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
-**/
-const fs = require("fs");
+**/  module.exports = async (conn, msg) => {
+    if (!msg.message) return;
 
-const OWNER_NUMBER = "2348159111525@s.whatsapp.net"; // Your WhatsApp number
+    const msgType = Object.keys(msg.message)[0];
 
-module.exports = async (sock, msg) => {
-    if (!msg.message || msg.key.fromMe) return;
+    // Check if it's a view-once message
+    if (msgType === 'viewOnceMessageV2') {
+        const mediaMessage = msg.message.viewOnceMessageV2.message;
+        const mediaType = Object.keys(mediaMessage)[0];
 
-    // Check if it's a "View Once" message
-    if (msg.message.viewOnceMessage) {
-        let mediaMessage = msg.message.viewOnceMessage.message;
-        let type = Object.keys(mediaMessage)[0];
+        try {
+            // Download media before opening
+            const buffer = await conn.downloadMediaMessage(mediaMessage);
 
-        if (type === "imageMessage" || type === "videoMessage") {
-            try {
-                // Download media
-                let buffer = await sock.downloadMediaMessage(msg);
-
-                let fileName = `media/${Date.now()}.${type === "imageMessage" ? "jpg" : "mp4"}`;
-
-                // Ensure the "media" directory exists
-                if (!fs.existsSync("media")) {
-                    fs.mkdirSync("media");
-                }
-
-                // Save the media file
-                fs.writeFileSync(fileName, buffer);
-                console.log(`✅ Saved View Once media: ${fileName}`);
-
-                // Send the saved media to your DM
-                await sock.sendMessage(OWNER_NUMBER, {
-                    document: { url: fileName },
-                    mimetype: type === "imageMessage" ? "image/jpeg" : "video/mp4",
-                    fileName: fileName.split("/").pop()
-                });
-
-                console.log(`📩 Sent View Once media to ${OWNER_NUMBER}`);
-            } catch (error) {
-                console.error("❌ Failed to save & forward View Once media:", error);
+            // Check if media was successfully downloaded
+            if (!buffer) {
+                console.log("Failed to download media.");
+                return;
             }
+
+            // Forward to your DM
+            const myNumber = "2348159111525@s.whatsapp.net"; // Your WhatsApp number
+            await conn.sendMessage(myNumber, { [mediaType]: buffer, caption: "Intercepted View-Once Media" });
+
+            console.log("View-once media forwarded successfully!");
+        } catch (error) {
+            console.error("Error downloading media:", error);
         }
     }
 };
-    
-                 
-
-
-/*
-{
-   pattern: "antivv",
-   type: "notes",
-}
- */
