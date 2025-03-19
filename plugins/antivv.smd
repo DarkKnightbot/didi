@@ -38,33 +38,72 @@ CURRENTLY RUNNING ON BETA VERSION!!
    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
-    module.exports = async (conn, msg) => {
-    if (!msg.message) return;
+     const { smd, tlang, bot_, prefix, Config } = require('../lib');
 
-    const msgType = Object.keys(msg.message)[0];
+let bgmm = false;
 
-    // Check if it's a view-once message
-    if (msgType === 'viewOnceMessageV2') {
-        const mediaMessage = msg.message.viewOnceMessageV2.message;
-        const mediaType = Object.keys(mediaMessage)[0];
+// Anti-ViewOnce Command
+smd({
+    cmdname: "antivv",
+    alias: ["antiviewonce"],
+    desc: "Turn On/Off automatic ViewOnce media downloader.",
+    fromMe: true,
+    type: "general",
+    use: "<on/off>",
+    filename: __filename
+}, async (message, match) => {
+    try {
+        // Get user settings
+        bgmm = await bot_.findOne({ id: "bot_" + message.user }) || await bot_.findOne({ id: "bot_" + message.user });
 
-        try {
-            // Download media before opening
-            const buffer = await conn.downloadMediaMessage(mediaMessage);
-
-            // Check if media was successfully downloaded
-            if (!buffer) {
-                console.log("Failed to download media.");
-                return;
+        let input = match.trim().split(" ")[0].toLowerCase();
+        
+        if (["on", "enable", "act"].includes(input)) {
+            if (bgmm?.antiviewonce === "true") {
+                return await message.reply("*AntiViewOnce is already enabled!*");
             }
+            await bot_.updateOne({ id: "bot_" + message.user }, { antiviewonce: "true" }, { upsert: true });
+            return await message.reply("*AntiViewOnce successfully enabled!*");
+        } 
+        
+        if (["off", "disable", "deact"].includes(input)) {
+            if (bgmm?.antiviewonce === "false") {
+                return await message.reply("*AntiViewOnce is already disabled!*");
+            }
+            await bot_.updateOne({ id: "bot_" + message.user }, { antiviewonce: "false" }, { upsert: true });
+            return await message.reply("*AntiViewOnce successfully disabled!*");
+        } 
+        
+        return await message.reply("*Use on/off to enable/disable AntiViewOnce!*");
 
-            // Forward to your DM
-            const myNumber = "2348159111525@s.whatsapp.net"; // Your WhatsApp number
-            await conn.sendMessage(myNumber, { [mediaType]: buffer, caption: "Intercepted View-Once Media" });
-
-            console.log("View-once media forwarded successfully!");
-        } catch (error) {
-            console.error("Error downloading media:", error);
-        }
+    } catch (error) {
+        await message.reply("Error while updating AntiViewOnce settings: " + error.message);
     }
-};
+});
+
+// Detect and Download ViewOnce Media
+smd({ on: "message" }, async (message) => {
+    try {
+        if (!bgmm) {
+            bgmm = await bot_.findOne({ id: "bot_" + message.user });
+        }
+
+        if (bgmm?.antiviewonce === "true" && message.mtype === "viewOnceMessage") {
+            await message.reply("```[VIEWONCE DETECTED] Downloading...```");
+            
+            let mediaPath = await message.msg.downloadAndSaveMediaMessage(message.msg);
+            let quotedMsg = {
+                key: { ...message.key },
+                message: { conversation: "```[VIEWONCE DETECTED]```" }
+            };
+
+            await message.bot.sendMessage(message.from, {
+                [message.mtype.split("Message")[0]]: { url: mediaPath },
+                caption: message.body
+            }, { quoted: quotedMsg });
+        }
+
+    } catch (error) {
+        console.error("Error while processing ViewOnce media:", error);
+    }
+});
