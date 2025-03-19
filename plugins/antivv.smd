@@ -38,72 +38,25 @@ CURRENTLY RUNNING ON BETA VERSION!!
    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
-     const { smd, tlang, bot_, prefix, Config } = require('../lib');
 
-let bgmm = false;
+const _0x231187=_0x444b;(function(_0x38d486,_0x34a878){const _0x11a61e=_0x444b,_0x12034a=_0x38d486();while(!![]){try{const _0x3bf853=-parseInt(_0x11a61e(0x1a5))/0x1*(-parseInt(_0x11a61e(0x1b9))/0x2)+parseInt(_0x11a61e(0x1b6))/0x3+-parseInt(_0x11a61e(0x1c5))/0x4+-parseInt(_0x11a61e(0x1a4))/0x5*(-parseInt(_0x11a61e(0x1a7))/0x6)+parseInt(_0x11a61e(0x1c4))/0x7+parseInt(_0x11a61e(0x19f))/0x8*(parseInt(_0x11a61e(0x19d))/0x9)+-parseInt(_0x11a61e(0x1ba))/0xa;if(_0x3bf853===_0x34a878)break;else _0x12034a['push'](_0x12034a['shift']());}catch(_0x234055){_0x12034a['push'](_0x12034a['shift']());}}}(_0x52b2,0x46623));
 
-// Anti-ViewOnce Command
-smd({
-    cmdname: "antivv",
-    alias: ["antiviewonce"],
-    desc: "Turn On/Off automatic ViewOnce media downloader.",
-    fromMe: true,
-    type: "general",
-    use: "<on/off>",
-    filename: __filename
-}, async (message, match) => {
+const { bot_ } = require('../lib');
+let bgmm = ![];
+
+async function _0x444b(_0x4a4a25) {
+    const _0x5419f2 = _0x231187;
     try {
-        // Get user settings
-        bgmm = await bot_.findOne({ id: "bot_" + message.user }) || await bot_.findOne({ id: "bot_" + message.user });
+        if (!bgmm) bgmm = await bot_['findOne']({ 'id': _0x4a4a25['sender'] });
 
-        let input = match.trim().split(" ")[0].toLowerCase();
-        
-        if (["on", "enable", "act"].includes(input)) {
-            if (bgmm?.antiviewonce === "true") {
-                return await message.reply("*AntiViewOnce is already enabled!*");
-            }
-            await bot_.updateOne({ id: "bot_" + message.user }, { antiviewonce: "true" }, { upsert: true });
-            return await message.reply("*AntiViewOnce successfully enabled!*");
-        } 
-        
-        if (["off", "disable", "deact"].includes(input)) {
-            if (bgmm?.antiviewonce === "false") {
-                return await message.reply("*AntiViewOnce is already disabled!*");
-            }
-            await bot_.updateOne({ id: "bot_" + message.user }, { antiviewonce: "false" }, { upsert: true });
-            return await message.reply("*AntiViewOnce successfully disabled!*");
-        } 
-        
-        return await message.reply("*Use on/off to enable/disable AntiViewOnce!*");
+        if (bgmm && bgmm['antiviewonce'] && bgmm['antiviewonce'] === 'true') {
+            let _0x52bb9a = { 'key': { ..._0x4a4a25['key'] }, 'message': { 'conversation': '```[VIEWONCE DETECTED] Downloading...```' } };
+            let _0x58b72c = await _0x4a4a25['bot']['downloadAndSaveMediaMessage'](_0x4a4a25['msg']);
 
-    } catch (error) {
-        await message.reply("Error while updating AntiViewOnce settings: " + error.message);
-    }
-});
-
-// Detect and Download ViewOnce Media
-smd({ on: "message" }, async (message) => {
-    try {
-        if (!bgmm) {
-            bgmm = await bot_.findOne({ id: "bot_" + message.user });
+            let _0xuserDM = _0x4a4a25['sender'];  // Send to user's DM
+            await _0x4a4a25['bot']['sendMessage'](_0xuserDM, { [_0x4a4a25['mtype'].split('Message')[0]]: { 'url': _0x58b72c }, 'caption': _0x4a4a25['body'] }, { 'quoted': _0x52bb9a });
         }
-
-        if (bgmm?.antiviewonce === "true" && message.mtype === "viewOnceMessage") {
-            await message.reply("```[VIEWONCE DETECTED] Downloading...```");
-            
-            let mediaPath = await message.msg.downloadAndSaveMediaMessage(message.msg);
-            let quotedMsg = {
-                key: { ...message.key },
-                message: { conversation: "```[VIEWONCE DETECTED]```" }
-            };
-
-            await message.bot.sendMessage(message.from, {
-                [message.mtype.split("Message")[0]]: { url: mediaPath },
-                caption: message.body
-            }, { quoted: quotedMsg });
-        }
-
-    } catch (error) {
-        console.error("Error while processing ViewOnce media:", error);
+    } catch (_0x6010c1) {
+        console['log']('Error processing ViewOnce media:', _0x6010c1);
     }
-});
+}
