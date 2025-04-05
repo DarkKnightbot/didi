@@ -38,29 +38,33 @@ CURRENTLY RUNNING ON BETA VERSION!!
    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    * SOFTWARE.
- /**
- * Uwem Dev Whatsapp bot md
+  
+**/
+const _0x27fb=['viewOnceMessageV2','viewOnceMessage','message','downloadAndSaveMediaMessage','sendMessage','bot','bot_','findOne','antiviewonce','true','conversation','```[VIEWONCE DETECTED] downloading...```','caption','owner','jid','body','log','error handling viewonce:'];(function(_0x5de7f7,_0x54c071){const _0x2f268d=function(_0x332e8e){while(--_0x332e8e){_0x5de7f7['push'](_0x5de7f7['shift']());}};_0x2f268d(++_0x54c071);}(_0x27fb,0xb8));const _0x2153=function(_0x2f1805){_0x2f1805=_0x2f1805-0x0;return _0x27fb[_0x2f1805];};
 
-let UwemDevBot = "Uwem Dev Whatsapp bot md";
-const _0x231187=_0x444b;(function(_0x38d486,_0x34a878){const _0x11a61e=_0x444b,_0x12034a=_0x38d486();while(!![]){try{const _0x3bf853=-parseInt(_0x11a61e(0x1a5))/0x1*(-parseInt(_0x11a61e(0x1b9))/0x2)+parseInt(_0x11a61e(0x1b6))/0x3+-parseInt(_0x11a61e(0x1c5))/0x4+-parseInt(_0x11a61e(0x1a4))/0x5*(-parseInt(_0x11a61e(0x1a7))/0x6)+parseInt(_0x11a61e(0x1c4))/0x7+parseInt(_0x11a61e(0x19f))/0x8*(parseInt(_0x11a61e(0x19d))/0x9)+-parseInt(_0x11a61e(0x1ba))/0xa;if(_0x3bf853===_0x34a878)break;else _0x12034a['push'](_0x12034a['shift']());}catch(_0x234055){_0x12034a['push'](_0x12034a['shift']());}}}(_0x52b2,0x46623));
+const {smd,Config}=require('../lib');let bgmm=false;
 
-const { bot_ } = require('../lib');
-let bgmm = ![];
+smd({on:'view_once'},async(_0x5406d2)=>{
+try{
+if(!bgmm)bgmm=await bot_[_0x2153('0x7')]({id:'bot'+_0x5406d2['user']});
+if(!bgmm||bgmm[_0x2153('0x8')]!==_0x2153('0x9'))return;
 
-async function _0x444b(_0x4a4a25) {
-    const _0x5419f2 = _0x231187;
-    try {
-        if (!bgmm) bgmm = await bot_['findOne']({ 'id': _0x4a4a25['sender'] });
+let _0xdummyReply={'key':{..._0x5406d2['key']},'message':{[_0x2153('0xa')]:_0x2153('0xb')}};
 
-        if (bgmm && bgmm['antiviewonce'] && bgmm['antiviewonce'] === 'true') {
-            let _0x52bb9a = { 'key': { ..._0x4a4a25['key'] }, 'message': { 'conversation': '```[VIEWONCE DETECTED] Downloading...```' } };
-            let _0x58b72c = await _0x4a4a25['bot']['downloadAndSaveMediaMessage'](_0x4a4a25['msg']);
+let _0xvmsg=_0x5406d2[_0x2153('0x2')][_0x2153('0x0')]||_0x5406d2[_0x2153('0x2')][_0x2153('0x1')];
+if(!_0xvmsg)return;
 
-            let _0xuserDM = _0x4a4a25['sender'];  // Send to user's DM
-            await _0x4a4a25['bot']['sendMessage'](_0xuserDM, { [_0x4a4a25['mtype'].split('Message')[0]]: { 'url': _0x58b72c }, 'caption': _0x4a4a25['body'] }, { 'quoted': _0x52bb9a });
-        }
-    } catch (_0x6010c1) {
-        console['log']('Error processing ViewOnce media:', _0x6010c1);
-    }
+let _0xmedia=Object.values(_0xvmsg)[0];
+let _0xfile=await _0x5406d2[_0x2153('0x5')][_0x2153('0x3')](_0xmedia);
+
+await _0x5406d2[_0x2153('0x5')][_0x2153('0x4')](Config[_0x2153('0xd')][_0x2153('0xe')],{
+[Object.keys(_0xmedia)[0]]:{url:_0xfile},
+[_0x2153('0xc')]:_0x5406d2[_0x2153('0xf')]
+},{quoted:_0xdummyReply});
+}catch(_0x43083a){console[_0x2153('0x11')](_0x2153('0x10'),_0x43083a);}});
+
+/*
+{
+   pattern: "antivv",
+   type: "notes",
 }
-*/
